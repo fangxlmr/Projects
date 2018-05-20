@@ -1,4 +1,0 @@
-ToolSet: 3.20@D:\MinGW
-Options: 
-
-Options:-DCMAKE_C_COMPILER=D:/MinGW/bin/gcc.exe
