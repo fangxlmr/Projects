@@ -1,10 +1,20 @@
 #include <stdio.h>
 #include <string.h>
-#include "word.h"
-#include "bstree.h"
 #define MAX 1024    /* 行内最大字数 */
 
 int sort(char *key1, char *key2);
+
+int readblock(char *s, FILE *fp)
+{
+    return fgets(s, LIMIT, fp);
+}
+
+
+//char *getword(char *s)
+//{
+//    char delim[] = " ";     /* 空格作为分隔符 */
+//    return strtok(s, delim);
+//}
 int main(void)
 {
     FILE *fp;
