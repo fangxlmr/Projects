@@ -1,6 +1,7 @@
-sc: sc.o arith.o
-	gcc -o $@ $<
+sc: sc.o list.o
+	gcc -o sc sc.o list.o
+sc.o: list.h
 
 .PHONY: clean
 clean:
-	-rm *.o
+	-rm sc *.o
