@@ -1,5 +1,5 @@
-#ifndef ARITHMETIC_H
-#define ARITHMETIC_H
+#ifndef ARITH_H
+#define ARITH_H
 
 int add(int x, int y);
 
@@ -11,4 +11,4 @@ int div(int x, int y);
 
 int mod(int x, int y);
 
-#endif /* ARITHMETIC_H */
+#endif /* ARITH_H */
