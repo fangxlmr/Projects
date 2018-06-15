@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "arithmetic.h"
+#include "arith.h"
 
 int main(void)
 {
