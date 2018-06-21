@@ -1,43 +1,63 @@
+#include <unistd.h>
 #include <stdio.h>
 #include <string.h>
-#define MAX 1024    /* 行内最大字数 */
+#include <ctype.h>
+#include <stdlib.h>
+#include "bstree.h"
+#define MAXLINE 5000    /* 行内最大字数 */
 
-int sort(char *key1, char *key2);
+char *getword(char *str);
 
-int readblock(char *s, FILE *fp)
+/* get a word from a string */
+char *getword(char *s)
 {
-    return fgets(s, LIMIT, fp);
+    int i;
+    char *index;    /* start index of a word */
+    static char *next = NULL;  /* next position of rest string */
+
+    i = 0;
+    index = NULL;
+
+    if (s == NULL) {
+        s = next;
+    }
+    while (s != NULL && s[i] != '\0') {
+        if (isalpha(s[i])) {
+            index = &s[i++];
+            break;
+        }
+        ++i;
+    }
+    while (s != NULL && s[i] != '\0') {
+        if (!isalpha(s[i])) {
+            s[i++] = '\0';
+            next = &s[i];
+            break;
+        }
+        ++i;
+    }
+    return index;
 }
 
-
-//char *getword(char *s)
-//{
-//    char delim[] = " ";     /* 空格作为分隔符 */
-//    return strtok(s, delim);
-//}
 int main(void)
 {
+    char line[MAXLINE];
+    char *word;
     FILE *fp;
-    char line[MAX];
-    char s[] =  "the"; /* 待匹配字符串 */
-    char *word;     /* 每个单词 */
-    BSTree_T tree;
-    char delim[] = " ";
+    BSTree_T root;
 
-    fp = fopen("./src/HarryPotter.txt", "r");
-    tree = bst_new();
-
-    while(readblock(line, fp) > 0) {
-        word = strtok(line, delim);
-        if (word != NULL) {
-            bst_key_insert(tree, word);
-        }
-        while((word = strtok(NULL, delim)) != NULL) {
-            bst_key_insert(tree, word);
+    root = bst_new();
+    fp = fopen("./Knowledge and Virtue.txt", "r");
+    while (fgets(line, MAXLINE, fp)) {
+        word = getword(line);
+        while (word != NULL) {
+//            printf("%s\n", word);
+            bst_insert(&root, word);
+            word = getword(NULL);
         }
     }
     fclose(fp);
-    printf("\n\n");
-    printf("Done.\n");
+    bst_inorder(root);
+    bst_free(&root);
     return 0;
 }
