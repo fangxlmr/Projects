@@ -83,14 +83,3 @@ void bst_free(T *root)
     free(*root);
     *root = NULL;
 }
-
-/* Inorder traversal of bstree */
-void bst_inorder(T root)
-{
-    if (!root) {
-        return;
-    }
-    bst_inorder(root->left);
-    printf("%s, count = %d\n", root->s, root->count);
-    bst_inorder(root->right);
-}
