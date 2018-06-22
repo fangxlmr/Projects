@@ -1,7 +1,11 @@
 #ifndef BSTREE_H
 #define BSTREE_H
 #define T BSTree_T
-
+struct T {
+    char *s;
+    unsigned int count;
+    struct T *left, *right;
+};
 typedef struct T *T;
 
 extern T bst_new(void);

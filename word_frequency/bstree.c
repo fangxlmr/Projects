@@ -4,11 +4,7 @@
 #include "bstree.h"
 #define T BSTree_T
 
-struct T {
-    char *s;
-    unsigned int count;
-    struct T *left, *right;
-};
+
 
 /* create a new bstree node */
 T bst_new(void)

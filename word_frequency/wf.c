@@ -80,7 +80,7 @@ void shiftdown(BSTree_T *h, int n, int i)
             t = i;
         }
         /* Compare it with right child if there is any */
-        if (i * 2 + 2 < n && cmp(h, t, i * 2 + 2)) {
+        if (i * 2 + 2 < n && cmp(h, t, i * 2 + 2) > 0) {
             t = i * 2 + 2;
         }
 
@@ -141,12 +141,15 @@ void bst_inorder(BSTree_T root, BSTree_T *h, int *index)
         h[(*index)++] = root;
         shiftup(h, *index, *index - 1);
     } else {
-        h[0] = root;
-        shiftdown(h, *index, 0);
+        if (root->count > h[0]->count) {
+            h[0] = root;
+            shiftdown(h, *index, 0);
+        }
     }
 
     bst_inorder(root->right, h, index);
 }
+
 
 int main(void)
 {
@@ -156,7 +159,7 @@ int main(void)
     BSTree_T root;
 
     root = bst_new();
-    fp = fopen("./Knowledge and Virtue.txt", "r");
+    fp = fopen("./Harry Potter.txt", "r");
     while (fgets(line, MAXLINE, fp)) {
         to_lower(line);
         word = getword(line);
@@ -173,10 +176,11 @@ int main(void)
 
     bst_inorder(root, top, &index);
     for (int i = 0; i < K; ++i) {
-        printf("%s, count = %d\n", top[i]->s, top[i]->count);
+        printf("%s, count = %d\n", top[0]->s, top[0]->count);
+        top[0] = top[--index];
+        shiftdown(top, index, 0);
     }
+    printf("Done.\n");
     bst_free(&root);
     return 0;
 }
-
-
