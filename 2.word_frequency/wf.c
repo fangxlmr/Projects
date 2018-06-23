@@ -6,10 +6,12 @@
 #include "bstree.h"
 #include "minheap.h"
 #define MAXLINE 5000    /* 行内最大字数 */
+int TOPK = 10; /* Top K items */
 
 void to_lower(char *line);
 char *getword(char *str);
 void bst_inorder(BSTree_T root, BSTree_T *h, int *index);
+int cmp(const void *x, const void *y);
 
 /* lower the case of chars in the line */
 void to_lower(char *s)
@@ -68,7 +70,7 @@ void bst_inorder(BSTree_T root, BSTree_T *h, int *index)
     }
     bst_inorder(root->left, h, index);
 
-    if (*index < K) {
+    if (*index < TOPK) {
         h[(*index)++] = root;
         shiftup(h, *index, *index - 1);
     } else {
@@ -79,6 +81,15 @@ void bst_inorder(BSTree_T root, BSTree_T *h, int *index)
     }
 
     bst_inorder(root->right, h, index);
+}
+
+/* Compare function for qsort */
+int cmp(const void *x, const void *y)
+{
+    BSTree_T *a, *b;
+    a = (BSTree_T *)x;
+    b = (BSTree_T *)y;
+    return (*b)->count - (*a)->count;
 }
 
 int main(void)
@@ -101,14 +112,13 @@ int main(void)
     fclose(fp);
 
     /* Min heap sort, find out top k of count */
-    BSTree_T top[K];
+    BSTree_T top[TOPK];
     int index = 0;
 
     bst_inorder(root, top, &index);
-    for (int i = 0; i < K; ++i) {
-        printf("%d: %s, count = %d\n", i, top[0]->s, top[0]->count);
-        top[0] = top[--index];
-        shiftdown(top, index, 0);
+    qsort(top, index, sizeof(top[0]), cmp);
+    for (int i = 0; i < TOPK; ++i) {
+        printf("No.%d:\t%s\tcount = %d\n", i + 1, top[i]->s, top[i]->count);
     }
     bst_free(&root);
     return 0;

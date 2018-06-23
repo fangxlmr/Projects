@@ -4,8 +4,6 @@
 #include "bstree.h"
 #define T BSTree_T
 
-int K = 10; /* Top K */
-
 /* create a new bstree node */
 T bst_new(void)
 {
