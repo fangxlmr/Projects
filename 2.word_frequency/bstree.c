@@ -4,8 +4,11 @@
 #include "bstree.h"
 #define T BSTree_T
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> word_frequency
 /* create a new bstree node */
 T bst_new(void)
 {
