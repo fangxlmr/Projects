@@ -2,6 +2,14 @@
 #define BSTREE_H
 #define T BSTree_T
 
+extern int K;
+
+struct T {  // TODO 如何对外隐藏结构体的细节，还没完全搞明白
+    char *s;
+    unsigned int count;
+    struct T *left, *right;
+};
+
 typedef struct T *T;
 
 extern T bst_new(void);
