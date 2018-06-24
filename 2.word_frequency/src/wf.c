@@ -153,6 +153,9 @@ int main(int argc, char *argv[])
         case 'n':
             TOPK = atoi(optarg);
             break;
+        case '?':
+            printf("Unknown option: %c\n", optopt);
+            break;
         }
     }
     /*

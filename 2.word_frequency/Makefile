@@ -1,7 +1,7 @@
-C_INCLUDE_PATH=./include
+C_INCLUDE_PATH=./include/
 export C_INCLUDE_PATH
-vpath %.c ./src
-vpath %.h ./include
+vpath %.c ./src/
+vpath %.h ./include/
 
 wf: wf.o minheap.o bstree.o
 	gcc -o wf wf.o minheap.o bstree.o
