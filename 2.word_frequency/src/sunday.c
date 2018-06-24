@@ -3,7 +3,7 @@
 #include <ctype.h>
 
 char *readline(char *line, int n, FILE *fp);
-char *match (char *s, char *t);
+char *sunday (char *s, char *t);
 
 char *readline(char *line, int n, FILE *fp)
 {
@@ -30,7 +30,7 @@ char *readline(char *line, int n, FILE *fp)
 
 }
 
-char *match (char *s, char *t)
+char *sunday (char *s, char *t)
 {
     int i, head;
     int s_len, t_len;
@@ -49,7 +49,6 @@ char *match (char *s, char *t)
             }
         } else {
             if ((find = strrchr(t, s[head + t_len])) != NULL) {
-                //printf("head + t_len - 1 = %d, s_len = %d.\n", head + t_len - 1, s_len);
                 head += t_len - (find - t);
             } else {
                 head += t_len + 1;
@@ -68,7 +67,7 @@ int main(void)
 
     fp = fopen("../res/Harry Potter.txt", "r");
     while(readline(s, 1024, fp) != NULL) {
-        if (match(s, p) != NULL) {
+        if (sunday(s, p) != NULL) {
             printf("%s", s);
         }
     }
