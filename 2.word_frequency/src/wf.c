@@ -5,15 +5,42 @@
 #include <stdlib.h>
 #include "bstree.h"
 #include "minheap.h"
-#define MAXLINE 5000    /* 行内最大字数 */
+#define MAXLINE 1024    /* 行内最大字数 */
 int TOPK = 10; /* Top K items */
 
+char *readline(char *line, int n, FILE *fp);
 void to_lower(char *line);
 char *getword(char *str);
 void bst_inorder(BSTree_T root, BSTree_T *h, int *index);
 int cmp(const void *x, const void *y);
 
-/* lower the case of chars in the line */
+char *readline(char *line, int n, FILE *fp)
+{
+    int offset;
+    int c;
+    char *backward;
+
+    if (fgets(line, n, fp) == NULL) {
+        return NULL;
+    } else {
+        fseek(fp, -1 * sizeof(char), SEEK_CUR);
+        c = fgetc(fp);
+        if (c != '\n') {
+            backward = line + n - 2;
+            while (isalpha(*backward)) {
+                --backward;
+            }
+            *backward = '\0';
+            offset = backward - (line + n - 2);
+            fseek(fp, offset * sizeof(char), SEEK_CUR);
+        }
+        return line;
+    }
+
+}
+/* lower the case of chars
+ * in the line of length n
+ */
 void to_lower(char *s)
 {
     int i;
@@ -30,39 +57,57 @@ void to_lower(char *s)
     }
 }
 
-/* get a word from a string */
+/* get a word from a string of length n */
 char *getword(char *s)
 {
     int i;
-    char *index;    /* start index of a word */
-    static char *next = NULL;  /* next position of rest string */
+    char *index;    /* Start index of a word */
+    static char *next = NULL;  /* Next position of rest string */
 
     i = 0;
     index = NULL;
 
+    /*
+     * Reset s with last next pointer
+     */
     if (s == NULL) {
         s = next;
     }
-    while (s != NULL && s[i] != '\0') {
-        if (isalpha(s[i])) {
-            index = &s[i++];
-            break;
+    /*
+     * Find out a word, and return start index.
+     * Reset next pointer at the same time.
+     * If meet the ends of string,
+     * reset next into NULL pointer.
+     */
+    if (s != NULL) {
+        while (s[i] != '\0') {  /* Find a word */
+            if (isalpha(s[i])) {
+                index = &s[i++];
+                break;
+            }
+            ++i;
         }
-        ++i;
-    }
-    while (s != NULL && s[i] != '\0') {
-        if (!isalpha(s[i])) {
-            s[i++] = '\0';
-            next = &s[i];
-            break;
+        while (s[i] != '\0') {  /* Reset next pointer */
+            if (!isalpha(s[i])) {
+                s[i++] = '\0';
+                next = &s[i];
+                break;
+            }
+            ++i;
         }
-        ++i;
+        if (s[i] == '\0') {     /* At the end of string, */
+            next = NULL;        /* reset next with NULL */
+        }
     }
+
     return index;
 }
 
 
-/* Inorder traversal of bstree */
+/*
+ * Inorder traversal of bstree.
+ * Store top k items of count into min heap.
+ */
 void bst_inorder(BSTree_T root, BSTree_T *h, int *index)
 {
     if (!root) {
@@ -92,17 +137,37 @@ int cmp(const void *x, const void *y)
     return (*b)->count - (*a)->count;
 }
 
-int main(void)
+int main(int argc, char *argv[])
 {
+    int opt;    /* Program option */
     char line[MAXLINE];
     char *word;
     FILE *fp;
     BSTree_T root;
 
+    while ((opt = getopt(argc, argv, "n:f:")) != -1) {
+        switch (opt) {
+        case 'f':
+            fp = fopen(optarg, "r");
+            break;
+        case 'n':
+            TOPK = atoi(optarg);
+            break;
+        }
+    }
+    /*
+     * Create binary search tree.
+     * Get a block of word from the file,
+     * and parse the string, then store
+     * the words in bstree.
+     */
     root = bst_new();
-    fp = fopen("./Harry Potter.txt", "r");
-    while (fgets(line, MAXLINE, fp)) {
-        to_lower(line);
+    while (readline(line, MAXLINE, fp)) {
+        to_lower(line);       /* Lower case */
+        /*
+         * Parse the line, get words
+         * and store words into bstree
+         */
         word = getword(line);
         while (word != NULL) {
             bst_insert(&root, word);
@@ -111,13 +176,20 @@ int main(void)
     }
     fclose(fp);
 
-    /* Min heap sort, find out top k of count */
+    /*
+     * Find out top k of
+     * count using min heap
+     */
     BSTree_T top[TOPK];
     int index = 0;
 
+    /*
+     * Inorder traversal BSTree and find out
+     * top k items in the tree and print them out
+     */
     bst_inorder(root, top, &index);
     qsort(top, index, sizeof(top[0]), cmp);
-    for (int i = 0; i < TOPK; ++i) {
+    for (int i = 0; i < index; ++i) {
         printf("No.%d:\t%s\tcount = %d\n", i + 1, top[i]->s, top[i]->count);
     }
     bst_free(&root);
