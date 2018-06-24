@@ -5,39 +5,15 @@
 #include <stdlib.h>
 #include "bstree.h"
 #include "minheap.h"
+#include "file.h"
 #define MAXLINE 1024    /* 行内最大字数 */
-int TOPK = 10; /* Top K items */
+int TOPK = 10; /*eTop K items */
 
-char *readline(char *line, int n, FILE *fp);
 void to_lower(char *line);
 char *getword(char *str);
 void bst_inorder(BSTree_T root, BSTree_T *h, int *index);
 int cmp(const void *x, const void *y);
 
-char *readline(char *line, int n, FILE *fp)
-{
-    int offset;
-    int c;
-    char *backward;
-
-    if (fgets(line, n, fp) == NULL) {
-        return NULL;
-    } else {
-        fseek(fp, -1 * sizeof(char), SEEK_CUR);
-        c = fgetc(fp);
-        if (c != '\n') {
-            backward = line + n - 2;
-            while (isalpha(*backward)) {
-                --backward;
-            }
-            *backward = '\0';
-            offset = backward - (line + n - 2);
-            fseek(fp, offset * sizeof(char), SEEK_CUR);
-        }
-        return line;
-    }
-
-}
 /* lower the case of chars
  * in the line of length n
  */
@@ -153,6 +129,11 @@ int main(int argc, char *argv[])
         case 'n':
             TOPK = atoi(optarg);
             break;
+        case 'w':
+
+        case '?':
+            printf("Unknown option: %c\n", optopt);
+            break;
         }
     }
     /*
@@ -162,7 +143,7 @@ int main(int argc, char *argv[])
      * the words in bstree.
      */
     root = bst_new();
-    while (readline(line, MAXLINE, fp)) {
+    while (readblock(line, MAXLINE, fp)) {
         to_lower(line);       /* Lower case */
         /*
          * Parse the line, get words
