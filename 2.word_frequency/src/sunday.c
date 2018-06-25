@@ -2,33 +2,7 @@
 #include <string.h>
 #include <ctype.h>
 
-char *readline(char *line, int n, FILE *fp);
 char *sunday (char *s, char *t);
-
-char *readline(char *line, int n, FILE *fp)
-{
-    int offset;
-    int c;
-    char *backward;
-
-    if (fgets(line, n, fp) == NULL) {
-        return NULL;
-    } else {
-        fseek(fp, -1 * sizeof(char), SEEK_CUR);
-        c = fgetc(fp);
-        if (c != '\n') {
-            backward = line + n - 2;
-            while (isalpha(*backward)) {
-                --backward;
-            }
-            *backward = '\0';
-            offset = backward - (line + n - 2);
-            fseek(fp, offset * sizeof(char), SEEK_CUR);
-        }
-        return line;
-    }
-
-}
 
 char *sunday (char *s, char *t)
 {
@@ -57,20 +31,4 @@ char *sunday (char *s, char *t)
         }
     }
     return NULL;
-}
-
-int main(void)
-{
-    FILE *fp;
-    char s[1024];
-    char p[] = "All was well";
-
-    fp = fopen("../res/Harry Potter.txt", "r");
-    while(readline(s, 1024, fp) != NULL) {
-        if (sunday(s, p) != NULL) {
-            printf("%s", s);
-        }
-    }
-    fclose(fp);
-    return 0;
 }
