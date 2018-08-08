@@ -258,8 +258,44 @@ void post_order(BiTree *root)
     /*
      * TODO there is a Morris postorder traversal of bitree,
      * TODO but it's a bit complicated.
-     * You can check it out in the website:
+     * You can check it out by following link:
      * https://www.cnblogs.com/AnnieKim/archive/2013/06/15/MorrisTraversal.html
      */
+}
 
+/**
+ * convert      convert bitree to doubly linked list in place
+ *
+ * @param root  root of bitree
+ * @param head  secondly pointer of doubly linked list
+ * @note        it can be done recursively, but I use Morris algorithm here.
+ */
+typedef BiTree Node;
+void convert(BiTree *root, Node **head)
+{
+    if (!root) {
+        return;
+    }
+
+    /*
+     * initialize previous visited node as NULL.
+     * it is static so that it will be accessible
+     * in all recursive calls.
+     */
+    static BiTree *prev = NULL;
+
+    /* recursively convert left subtree */
+    convert(root->left, head);
+
+    /* convert this node */
+    if (prev == NULL) {
+        *head = root;
+    } else {
+        root->left = prev;
+        prev->right = root;
+    }
+    prev = root;
+
+    /* finally convert right subtree */
+    convert(root->right, head);
 }
