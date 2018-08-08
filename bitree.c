@@ -269,6 +269,8 @@ void post_order(BiTree *root)
  * @param root  root of bitree
  * @param head  secondly pointer of doubly linked list
  * @note        it can be done recursively, but I use Morris algorithm here.
+ *
+ * //TODO to be tested
  */
 typedef BiTree Node;
 void convert(BiTree *root, Node **head)
@@ -298,4 +300,111 @@ void convert(BiTree *root, Node **head)
 
     /* finally convert right subtree */
     convert(root->right, head);
+}
+
+/**
+ * get_num_k_level  get total of nodes in k level of bitree
+ */
+int get_num_k_level(BiTree *root, int k)
+{
+    int left, right;
+
+    if (!root || k < 1) {
+        return 0;
+
+    } else if (k == 1) {
+        return 1;
+
+    } else {
+        left  = get_num_k_level(root->left,  k - 1);
+        right = get_num_k_level(root->right, k - 1);
+        return left + right;
+    }
+}
+
+/**
+ * get_num_leaves   get total of leaves in bitree
+ */
+int get_num_leaves(BiTree *root)
+{
+    if (!root) {
+        return 0;
+
+    } else if (!root->left && !root->right) {
+        return 1;
+
+    } else {
+        return get_num_k_level(root->left) + \
+               get_num_k_level(root->right);
+    }
+}
+
+/**
+ * is_same      check r1 and r2 is the same
+ */
+int is_same(BiTree *r1, BiTree *r2)
+{
+    if (!r1 && !r2) {
+        return 1;
+    } else if (!r1 || !r2) {
+        return 0;
+    } else {
+        int x1, x2;
+        x1 = is_same(r1->left)  && is_same(r2->left);
+        x2 = is_same(r1->right) && is_same(r2->right);
+        return x1 && x2;
+    }
+}
+
+/**
+ * is_symmetric    check bitree is symmetry recursively
+ */
+int is_symmetric(BiTree *root) {
+    int helper(BiTree *r1, BiTree *r2);
+
+    return helper(root, root);
+}
+
+int helper(BiTree *r1, BiTree *r2) {
+    if (!r1 && !r2) {
+        return 1;
+    }
+    if (!r1 || !r2) {
+        return 0;
+    }
+    return r1->val == r2->val && \
+           helper(r1->left, r2->right) && \
+           helper(r1->right, r2->left);
+}
+
+/**
+ * is_symmetric    check bitree is symmetry using queue
+ */
+int is_symmetric(BiTree *root) {
+    if (!root) {
+        return 1;
+    }
+
+    BiTree *p, *q;
+    enqueue(root);
+    enqueue(root);
+    while (!is_empty()) {
+        p = dequeue();
+        q = dequeue();
+
+        if (p && q && p->val == q->val) {
+            /* enqueue reversely */
+            enqueue(p->left);
+            enqueue(q->right);
+            enqueue(p->right);
+            enqueue(q->left);
+
+        } else if (!p && !q) {
+            continue;
+            
+        } else {
+            return 0;
+        }
+    }
+    return 1;
 }
