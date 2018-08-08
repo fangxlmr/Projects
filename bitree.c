@@ -1,3 +1,6 @@
+/**
+ * definition of binary tree
+ */
 typedef struct _BiTree BiTree;
 struct _BiTree {
     int val;
