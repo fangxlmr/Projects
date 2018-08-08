@@ -340,7 +340,7 @@ int get_num_leaves(BiTree *root)
 }
 
 /**
- * is_same      check r1 and r2 is the same
+ * is_same      check r1 and r2 is the same on structure
  */
 int is_same(BiTree *r1, BiTree *r2)
 {
@@ -407,4 +407,118 @@ int is_symmetric(BiTree *root) {
         }
     }
     return 1;
+}
+
+/**
+ * mirror       derive a mirror bitree from origin
+ * //TODO to be tested
+ */
+void mirror(BiTree *root)
+{
+    if (!root) {
+        return;
+    }
+
+    BiTree *p;
+    p = root->left;
+    root->left = root->right;
+    root->right = p;
+
+    mirror(root->left);
+    mirror(root->right);
+}
+
+/**
+ * build_tree   build a tree from in- and post-order traversal of tree
+ * 
+ * @param in    array of in-order traversal of tree
+ * @param is    in-order size of array
+ * @param post  array of post-order traversal of tree
+ * @param ps    post-order size of array
+ * @return      return tree built from the two
+ */
+BiTree *build_tree(int *in, int is, int *post, int ps)
+{
+    if (is == 0) {
+        return NULL;
+    }
+
+    /*
+     * the last one in post is root value,
+     * find root of the tree in inorder.
+     */
+    int *index;
+    for (index = in; index < in + is - 1; ++index) {
+        if (*index == post[ps - 1]) {
+            break;
+        }
+    }
+
+    int left, right;
+    BiTree *t;
+    t = (BiTree *) malloc(sizeof(BiTree));
+    if (!t) {
+        return NULL;
+    } else {
+        /*
+         * divide and conquer, handle left and
+         * right side of the root, which correspond
+         * to the left and right subtree
+         */
+        left  = index - in;
+        right = is - left - 1;
+
+        t->val = *index;
+        t->left  = build_tree(in, left, post, right);
+        t->right = build_tree(index + 1, right, post + left, right);
+    }
+    return t;
+}
+
+/**
+ * build_tree   build a tree from in- and pre-order traversal of tree
+ * 
+ * @param pre   array of pre-order traversal of tree
+ * @param ps    pre-order size of array
+ * @param in    array of in-order traversal of tree
+ * @param is    in-order size of array
+ * @return      return tree built from the two
+ */
+BiTree *build_tree(int *pre, int ps, int *in, int is)
+{
+    if (is == 0) {
+        return NULL;
+    }
+
+    /*
+     * the first one in pre is root value,
+     * find root of the tree in inorder.
+     */
+    int *index;
+    for (index = in; index < in + is - 1; ++index) {
+        if (*index == *pre) {
+            break;
+        }
+    }
+
+    int left, right;
+    BiTree *t;
+    t = (BiTree *) malloc(sizeof(BiTree));
+    if (!t) {
+        return NULL;
+    } else {
+        /*
+         * divide and conquer, handle left and
+         * right side of the root, which correspond
+         * to the left and right subtree
+         */
+        left  = index - in;
+        right = is - left - 1;
+
+        t->val = *index;
+        t->left  = build_tree(pre + 1, left, in, left);
+        t->right = build_tree(pre + left + 1, right, in + 1, right);
+    }
+
+    return t;
 }
