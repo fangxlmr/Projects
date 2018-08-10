@@ -268,10 +268,32 @@ void insertion_sort(int *v, int size)
 
 /**
  * shell sort
+ * It is said it was an optimization of insertion sort.
+ * I didn't really understand it, but it works well.
  */
 void shell_sort(int *v, int size)
 {
-    
+    int i, j, gap;
+    int k, tmp;
+
+    /* gap is step size */
+    for (gap = size / 2; gap > 0; gap /= 2) {
+        /* insertion sort on each group */
+        for (i = 0; i < gap; ++i) {
+            for (j = i + gap; j < size; j += gap) {
+                if (v[j] < v[j - gap]) {
+                    k = j - gap;
+                    tmp = v[j];
+
+                    while (k >= 0 && v[k] > tmp) {
+                        v[k + gap] = v[k];
+                        k -= gap;
+                    }
+                    v[k + gap] = tmp;
+                }
+            }
+        }
+    }
 }
 
 
@@ -281,7 +303,7 @@ int main(void)
     int a[] = {1, 99, 3, 44, 88, 78, 999, 65, 0, -39, -55, -234};
     int len = sizeof(a) / sizeof(a[0]);
 
-    insertion_sort(a, len);
+    shell_sort(a, len);
     for (int i = 0; i < len; ++i) {
         printf("%d, ", a[i]);
     }
