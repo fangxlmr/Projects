@@ -5,9 +5,9 @@
  */
 
 /**
- * qsort    core function of quick sort
+ * quick_sort    core function of quick sort
  */
-void qsort(int *v, int left, int right)
+void quick_sort(int *v, int left, int right)
 {
     int i, last;
     void swap(int *v, int x, int y);
@@ -24,8 +24,8 @@ void qsort(int *v, int left, int right)
     }
     swap(v, left, last);        /* restore partition elem */
 
-    qsort(v, left, last - 1);
-    qsort(v, last + 1, right);
+    quick_sort(v, left, last - 1);
+    quick_sort(v, last + 1, right);
 }
 
 void swap(int *v, int x, int y)
@@ -163,6 +163,28 @@ void cock_tail_sort(int *v, int size)
     }
 }
 
+/**
+ * selection_sort
+ */
+void selection_sort(int *v, int size)
+{
+    int i, j;
+    int tmp, min, index;
+
+    for (i = 0; i < size - 1; ++i) {
+        min = v[i];
+        index = i;
+        for (j = i; j < size; ++j) {
+            if (v[j] < min) {
+                min = v[j];
+                index = j;
+            }
+        }
+        tmp = v[i];
+        v[i] = min;
+        v[index] = tmp;
+    }
+}
 
 #include <stdio.h>
 int main(void)
@@ -170,7 +192,7 @@ int main(void)
     int a[] = {1, 99, 3, 44, 88, 78, 999, 65, 0, -39, -55, -234};
     int len = sizeof(a) / sizeof(a[0]);
 
-    cock_tail_sort(a, len);
+    selection_sort(a, len);
     for (int i = 0; i < len; ++i) {
         printf("%d, ", a[i]);
     }
