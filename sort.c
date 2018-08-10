@@ -264,7 +264,6 @@ void insertion_sort(int *v, int size)
         v[j + 1] = cur;
     }
 }
-#endif
 
 /**
  * shell sort
@@ -295,7 +294,58 @@ void shell_sort(int *v, int size)
         }
     }
 }
+#endif
 
+/**
+ * merge sort: top-down method
+ */
+void merge(int *v, int beg, int mid, int end);
+void merge_sort(int *v, int beg, int end)
+{
+    int mid;
+
+    if (beg >= end) {
+        return;
+    }
+    mid = (end + beg) / 2;
+    merge_sort(v, beg, mid);
+    merge_sort(v, mid + 1, end);
+    merge(v, beg, mid, end);
+}
+
+void merge(int *v, int beg, int mid, int end)
+{
+    int i, j, k;
+    int *dummy;
+
+    i = beg;
+    j = mid + 1;
+    k = 0;
+
+    /*
+     * dummy array could be malloced before
+     * to optimize it.
+     */
+    dummy = (int *) malloc((end - beg + 1) * sizeof(int));
+    while (i <= mid && j <= end) {
+        if (v[i] < v[j]) {
+            dummy[k++] = v[i++];
+        } else {
+            dummy[k++] = v[j++];
+        }
+    }
+    while (i <= mid) {
+        dummy[k++] = v[i++];
+    }
+    while (j <= end) {
+        dummy[k++] = v[j++];
+    }
+
+    for (i = 0; i < k; ++i) {
+        v[beg + i] = dummy[i];
+    }
+    free(dummy);
+}
 
 #include <stdio.h>
 int main(void)
@@ -303,7 +353,7 @@ int main(void)
     int a[] = {1, 99, 3, 44, 88, 78, 999, 65, 0, -39, -55, -234};
     int len = sizeof(a) / sizeof(a[0]);
 
-    shell_sort(a, len);
+    merge_sort(a, 0, len - 1);
     for (int i = 0; i < len; ++i) {
         printf("%d, ", a[i]);
     }
