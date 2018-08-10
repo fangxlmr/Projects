@@ -115,13 +115,62 @@ void bubble_sort(int *v, int size)
     }
 }
 
+/**
+ * cock tail sort with optimization
+ */
+void cock_tail_sort(int *v, int size)
+{
+    int i, j, tmp;
+    int sorted;
+    /* restore the last swap position of odd and even loops*/
+    int llast, rlast;
+    int lborder, rborder;   /* two border of loops */
+
+    llast = 0;
+    rlast = 0;
+    lborder = 0;
+    rborder = size - 1;
+    for (i = 0; i < size / 2 - 1; ++i) {
+        sorted = 1;
+
+        /* odd loops, from left to right */
+        for (j = i; j < rborder; ++j) {
+            if (v[j] > v[j + 1]) {
+                tmp = v[j];
+                v[j] = v[j + 1];
+                v[j + 1] = tmp;
+                sorted = 0;
+                rlast = j;
+            }
+        }
+        rborder = rlast;
+
+        /* even loops, from right to left */
+        for (j = size - i - 1; j > lborder; --j) {
+            if (v[j] < v[j - 1]) {
+                tmp = v[j];
+                v[j] = v[j - 1];
+                v[j - 1] = tmp;
+                sorted = 0;
+                llast = j;
+            }
+        }
+        lborder = llast;
+
+        if (sorted) {
+            break;
+        }
+    }
+}
+
+
 #include <stdio.h>
 int main(void)
 {
     int a[] = {1, 99, 3, 44, 88, 78, 999, 65, 0, -39, -55, -234};
     int len = sizeof(a) / sizeof(a[0]);
 
-    bubble_sort(a, len);
+    cock_tail_sort(a, len);
     for (int i = 0; i < len; ++i) {
         printf("%d, ", a[i]);
     }
