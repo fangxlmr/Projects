@@ -294,10 +294,10 @@ void shell_sort(int *v, int size)
         }
     }
 }
-#endif
 
 /**
  * merge sort: top-down method
+ * //TODO there is another bottom-up method and need to be implemented.
  */
 void merge(int *v, int beg, int mid, int end);
 void merge_sort(int *v, int beg, int end)
@@ -346,14 +346,33 @@ void merge(int *v, int beg, int mid, int end)
     }
     free(dummy);
 }
+#endif
 
+void counting_sort(int *v, int size, int max)
+{
+    int i, j;
+    int bucket[max + 1];
+
+    memset(bucket, 0, (max + 1) * sizeof(int));
+    for (i = 0; i < size; ++i) {
+        bucket[v[i]]++;
+    }
+
+    j = 0;
+    for (i = 0; i < max + 1; ++i) {
+        while (bucket[i] > 0) {
+            v[j++] = i;
+            bucket[i]--;
+        }
+    }
+}
 #include <stdio.h>
 int main(void)
 {
     int a[] = {1, 99, 3, 44, 88, 78, 999, 65, 0, -39, -55, -234};
     int len = sizeof(a) / sizeof(a[0]);
 
-    merge_sort(a, 0, len - 1);
+    counting_sort(a, len, 1000);
     for (int i = 0; i < len; ++i) {
         printf("%d, ", a[i]);
     }
