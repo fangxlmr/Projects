@@ -47,7 +47,7 @@ void bubble_sort(int *v, int size)
     int tmp;
 
     for (i = 0; i < size; ++i) {
-        for (j = 0; j < size - 1; ++j) {
+        for (j = 0; j < size - i - 1; ++j) {
             if (v[j] > v[j + 1]) {
                 tmp = v[j];
                 v[j] = v[j + 1];
@@ -68,7 +68,7 @@ void bubble_sort(int *v, int size)
 
     for (i = 0; i < size; ++i) {
         sorted = 1;
-        for (j = 0; j < size - 1; ++j) {
+        for (j = 0; j < size - i - 1; ++j) {
             if (v[j] > v[j + 1]) {
                 sorted = 0; /* still change, not sorted */
                 tmp = v[j];
@@ -82,8 +82,8 @@ void bubble_sort(int *v, int size)
         }
     }
 }
-#endif
 
+#endif
 /**
  * bubble_sort  v2.0, using sorted flag and last flag
  */
