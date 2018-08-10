@@ -185,7 +185,6 @@ void selection_sort(int *v, int size)
     }
 }
 
-#endif
 /**
  * heap sort using max heap
  */
@@ -246,13 +245,43 @@ void swap(int *v, int x, int y)
     v[y] = temp;
 }
 
+
+/**
+ * insertion_sort
+ */
+void insertion_sort(int *v, int size)
+{
+    int i, j;
+    int cur;
+
+    for (i = 1; i < size; ++i) {
+        cur = v[i];
+        j = i - 1;
+        while (j >= 0 && v[j] > cur) {
+            v[j + 1] = v[j];
+            --j;
+        }
+        v[j + 1] = cur;
+    }
+}
+#endif
+
+/**
+ * shell sort
+ */
+void shell_sort(int *v, int size)
+{
+    
+}
+
+
 #include <stdio.h>
 int main(void)
 {
     int a[] = {1, 99, 3, 44, 88, 78, 999, 65, 0, -39, -55, -234};
     int len = sizeof(a) / sizeof(a[0]);
 
-    heap_sort(a, len);
+    insertion_sort(a, len);
     for (int i = 0; i < len; ++i) {
         printf("%d, ", a[i]);
     }
