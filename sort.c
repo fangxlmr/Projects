@@ -4,6 +4,8 @@
  * @brief implementation of most sort algorithm
  */
 
+#define DEBUG
+#ifndef DEBUG
 /**
  * quick_sort    core function of quick sort
  */
@@ -36,8 +38,6 @@ void swap(int *v, int x, int y)
     v[y] = temp;
 }
 
-#define DEBUG
-#ifndef DEBUG
 /**
  * bubble_sort  without optimization
  */
@@ -83,7 +83,6 @@ void bubble_sort(int *v, int size)
     }
 }
 
-#endif
 /**
  * bubble_sort  v2.0, using sorted flag and last flag
  */
@@ -186,13 +185,74 @@ void selection_sort(int *v, int size)
     }
 }
 
+#endif
+/**
+ * heap sort using max heap
+ */
+void swap(int *v, int x, int y);
+void shiftdown(int *v, int i, int size);
+void heap_sort(int *v, int size)
+{
+    int i;
+    /* heapify from the first non-leaf node */
+    for (i = size / 2 - 1; i >= 0; --i) {
+        shiftdown(v, i, size);
+    }
+
+    for (i = size - 1; i > 0; --i) {
+        swap(v, 0, i);
+        shiftdown(v, 0, i);
+    }
+}
+
+void shiftdown(int *v, int i, int size)
+{
+    int t;
+    int left, right;
+
+    t = i;
+    left  = 2 * i + 1;
+    right = 2 * i + 2;
+
+    while (left < size) {   /* have one child at least */
+        if (v[left] > v[i]) {
+            t = left;
+        }
+        if (right < size && v[right] > v[t]) {
+            t = right;
+        }
+
+        if (t != i) {
+            swap(v, i, t);
+            /*
+             * keep shifting down for left
+             * and right children
+             */
+            i = t;
+            left  = 2 * i + 1;
+            right = 2 * i + 2;
+
+        } else {    /* finish shift down process */
+            break;
+        }
+    }
+}
+
+void swap(int *v, int x, int y)
+{
+    int temp;
+    temp = v[x];
+    v[x] = v[y];
+    v[y] = temp;
+}
+
 #include <stdio.h>
 int main(void)
 {
     int a[] = {1, 99, 3, 44, 88, 78, 999, 65, 0, -39, -55, -234};
     int len = sizeof(a) / sizeof(a[0]);
 
-    selection_sort(a, len);
+    heap_sort(a, len);
     for (int i = 0; i < len; ++i) {
         printf("%d, ", a[i]);
     }
