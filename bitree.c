@@ -228,7 +228,7 @@ void post_order(BiTree *root)
 
 /**
  * post_order  postorder traversal of bitree non-recursively
- * @note       using queue
+ * @note       using stack
  */
 void post_order(BiTree *root)
 {
@@ -236,19 +236,31 @@ void post_order(BiTree *root)
         return;
     }
 
-    BiTree *p;
-    p = root;
-    while (p || is_empty) { /* is_empty works for queue */
-        if (p) {
-            printf("val = %d\n", p->val);
-            if (p->left) {
-                enqueue(p->left);
-            }
-            if (p->right) {
-                enqueue(p->right);
-            }
+    BiTree *cur, *pre;
+    cur = root;
+    pre = NULL;
+    push(cur);
+    while (is_empty()) {    /* is_empty works for stack */
+        cur = get_top();    /* get top of stack */
+        if (!cur) {
+            pop();
+            continue;
+        }
+
+        /* visit left and right before root */
+        if ((!cur->left  && !cur->right) ||
+            (pre != NULL && (pre == cur->left || pre == cur->right))) {
+            printf("val = %d\n", cur->val);
+            pop();
+            pre = cur;
+
         } else {
-            p = dequeue();
+            if (!cur->right) {
+                push(cur->right);
+            }
+            if (!cur->left) {
+                push(cur->left);
+            }
         }
     }
 }
