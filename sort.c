@@ -35,3 +35,96 @@ void swap(int *v, int x, int y)
     v[x] = v[y];
     v[y] = temp;
 }
+
+#define DEBUG
+#ifndef DEBUG
+/**
+ * bubble_sort  without optimization
+ */
+void bubble_sort(int *v, int size)
+{
+    int i, j;
+    int tmp;
+
+    for (i = 0; i < size; ++i) {
+        for (j = 0; j < size - 1; ++j) {
+            if (v[j] > v[j + 1]) {
+                tmp = v[j];
+                v[j] = v[j + 1];
+                v[j + 1] = tmp;
+            }
+        }
+    }
+}
+
+/**
+ * bubble_sort  v1.0, using sorted flag
+ */
+void bubble_sort(int *v, int size)
+{
+    int i, j;
+    int tmp;
+    int sorted;   /* a flag that array was sorted or not */
+
+    for (i = 0; i < size; ++i) {
+        sorted = 1;
+        for (j = 0; j < size - 1; ++j) {
+            if (v[j] > v[j + 1]) {
+                sorted = 0; /* still change, not sorted */
+                tmp = v[j];
+                v[j] = v[j + 1];
+                v[j + 1] = tmp;
+            }
+        }
+
+        if (sorted) {
+            break;
+        }
+    }
+}
+#endif
+
+/**
+ * bubble_sort  v2.0, using sorted flag and last flag
+ */
+void bubble_sort(int *v, int size)
+{
+    int i, j, tmp;
+    int sorted;   /* a flag that array was sorted or not */
+    int border;   /* sorted border of array */
+    int last;     /* a flag of last swap position */
+
+    last = 0;
+    border = size - 1;
+    for (i = 0; i < size; ++i) {
+        sorted = 1;
+        for (j = 0; j < border; ++j) {
+            if (v[j] > v[j + 1]) {
+                tmp = v[j];
+                v[j] = v[j + 1];
+                v[j + 1] = tmp;
+                sorted = 0; /* still change, not sorted */
+                last = j;   /* last swap position */
+            }
+        }
+
+        border = last;  /* update sorted border */
+        if (sorted) {
+            break;
+        }
+    }
+}
+
+#include <stdio.h>
+int main(void)
+{
+    int a[] = {1, 99, 3, 44, 88, 78, 999, 65, 0, -39, -55, -234};
+    int len = sizeof(a) / sizeof(a[0]);
+
+    bubble_sort(a, len);
+    for (int i = 0; i < len; ++i) {
+        printf("%d, ", a[i]);
+    }
+
+    return 0;
+}
