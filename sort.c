@@ -4,15 +4,24 @@
  * @brief implementation of most sort algorithm
  */
 
-#define DEBUG
-#ifndef DEBUG
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+static void swap(int *v, int x, int y)
+{
+    int temp;
+    temp = v[x];
+    v[x] = v[y];
+    v[y] = temp;
+}
+
 /**
  * quick_sort    core function of quick sort
  */
 void quick_sort(int *v, int left, int right)
 {
     int i, last;
-    void swap(int *v, int x, int y);
 
     if (left >= right) {    /* do nothing ig array contains*/
         return;             /* fewer than 2 elements */
@@ -30,14 +39,8 @@ void quick_sort(int *v, int left, int right)
     quick_sort(v, last + 1, right);
 }
 
-void swap(int *v, int x, int y)
-{
-    int temp;
-    temp = v[x];
-    v[x] = v[y];
-    v[y] = temp;
-}
 
+#if 0
 /**
  * bubble_sort  without optimization
  */
@@ -82,6 +85,7 @@ void bubble_sort(int *v, int size)
         }
     }
 }
+#endif
 
 /**
  * bubble_sort  v2.0, using sorted flag and last flag
@@ -89,7 +93,7 @@ void bubble_sort(int *v, int size)
 void bubble_sort(int *v, int size)
 {
     int i, j, tmp;
-    int sorted;   /* a flag that array was sorted or not */
+    int sorted;   /* a flag shows array was sorted or not */
     int border;   /* sorted border of array */
     int last;     /* a flag of last swap position */
 
@@ -125,6 +129,7 @@ void cock_tail_sort(int *v, int size)
     int llast, rlast;
     int lborder, rborder;   /* two border of loops */
 
+    /* initialize flags and borders */
     llast = 0;
     rlast = 0;
     lborder = 0;
@@ -163,33 +168,30 @@ void cock_tail_sort(int *v, int size)
 }
 
 /**
- * selection_sort
+ * selection sort
  */
 void selection_sort(int *v, int size)
 {
     int i, j;
-    int tmp, min, index;
+    int min, index;
 
     for (i = 0; i < size - 1; ++i) {
         min = v[i];
         index = i;
-        for (j = i; j < size; ++j) {
+        for (j = i + 1; j < size; ++j) {
             if (v[j] < min) {
                 min = v[j];
                 index = j;
             }
         }
-        tmp = v[i];
-        v[i] = min;
-        v[index] = tmp;
+        swap(v, i, index);
     }
 }
 
 /**
  * heap sort using max heap
  */
-void swap(int *v, int x, int y);
-void shiftdown(int *v, int i, int size);
+static void shiftdown(int *v, int i, int size);
 void heap_sort(int *v, int size)
 {
     int i;
@@ -199,7 +201,12 @@ void heap_sort(int *v, int size)
     }
 
     for (i = size - 1; i > 0; --i) {
+        /* swap first and last elem in array */
         swap(v, 0, i);
+        /*
+         * decrement the size of max heap
+         * and heapify it again
+         */
         shiftdown(v, 0, i);
     }
 }
@@ -237,17 +244,8 @@ void shiftdown(int *v, int i, int size)
     }
 }
 
-void swap(int *v, int x, int y)
-{
-    int temp;
-    temp = v[x];
-    v[x] = v[y];
-    v[y] = temp;
-}
-
-
 /**
- * insertion_sort
+ * insertion sort
  */
 void insertion_sort(int *v, int size)
 {
@@ -257,11 +255,13 @@ void insertion_sort(int *v, int size)
     for (i = 1; i < size; ++i) {
         cur = v[i];
         j = i - 1;
+
+        /* find the correct position to insert */
         while (j >= 0 && v[j] > cur) {
             v[j + 1] = v[j];
             --j;
         }
-        v[j + 1] = cur;
+        v[j + 1] = cur;     /* insert */
     }
 }
 
@@ -346,7 +346,6 @@ void merge(int *v, int beg, int mid, int end)
     }
     free(dummy);
 }
-#endif
 
 void counting_sort(int *v, int size, int max)
 {
@@ -366,13 +365,13 @@ void counting_sort(int *v, int size, int max)
         }
     }
 }
-#include <stdio.h>
+
 int main(void)
 {
     int a[] = {1, 99, 3, 44, 88, 78, 999, 65, 0, -39, -55, -234};
     int len = sizeof(a) / sizeof(a[0]);
 
-    counting_sort(a, len, 1000);
+    selection_sort(a, len);
     for (int i = 0; i < len; ++i) {
         printf("%d, ", a[i]);
     }
